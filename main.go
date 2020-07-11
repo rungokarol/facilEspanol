@@ -5,7 +5,7 @@ import (
   "log"
   "net/http"
 
-  "github.com/rungokarol/facilEspanol/src/login"
+  "github.com/rungokarol/facilEspanol/login"
 )
 
 func handler(responseWriter http.ResponseWriter, r *http.Request) {

@@ -1,10 +1,12 @@
 PHONY=clean build run
 
+all: build
+
 clean:
-		rm -fr bin/
+	rm -fr bin/
 
 build:
-		go build -o bin/server
+	go build -o bin/server
 
 run: build
 	./bin/server

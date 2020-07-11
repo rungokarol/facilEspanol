@@ -4,6 +4,8 @@ import (
   "fmt"
   "log"
   "net/http"
+
+  "github.com/rungokarol/facilEspanol/login"
 )
 
 func handler(responseWriter http.ResponseWriter, r *http.Request) {
@@ -14,6 +16,7 @@ func handler(responseWriter http.ResponseWriter, r *http.Request) {
 
 func main() {
     http.HandleFunc("/", handler)
+    http.HandleFunc("/login", login.LoginHandler)
     log.Fatal(http.ListenAndServe(":8080", nil))
 }
 

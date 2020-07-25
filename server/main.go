@@ -19,7 +19,7 @@ func handler(responseWriter http.ResponseWriter, r *http.Request) {
 }
 
 func initDb() *gorm.DB {
-	db, err := gorm.Open("postgres", "host=localhost port=5432 user=facilespanoluser dbname=facilespanoldb password=facilEspanolPass  sslmode=disable")
+	db, err := gorm.Open("postgres", "host=localhost port=5432 user=facilEspanolUser dbname=facilEspanolDb password=facilEspanolPass sslmode=disable")
 	if err != nil {
 		log.Println(err)
 		panic("failed to connect database")

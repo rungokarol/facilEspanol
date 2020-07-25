@@ -18,7 +18,7 @@ func handler(responseWriter http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(responseWriter, "Hello %s!", r.URL.Path[1:])
 }
 
-func initDb() *gorm.DB {
+func createEnv() *Env {
 	db, err := gorm.Open("postgres", "host=localhost port=5432 user=facilEspanolUser dbname=facilEspanolDb password=facilEspanolPass sslmode=disable")
 	if err != nil {
 		log.Println(err)
@@ -30,14 +30,22 @@ func initDb() *gorm.DB {
 	// Migrate the schema
 	db.AutoMigrate(&model.User{})
 
-	return db
+	return &Env{db}
+}
+
+type Env struct {
+	db *gorm.DB
+}
+
+func (env *Env) loginHandler(responseWriter http.ResponseWriter, r *http.Request) {
+	login.HandleRequest(responseWriter)
 }
 
 func main() {
-	db := initDb()
-	defer db.Close()
+	env := createEnv()
+	defer env.db.Close() //make it private
 
 	http.HandleFunc("/", handler)
-	http.HandleFunc("/login", login.LoginHandler)
+	http.HandleFunc("/user/login", env.loginHandler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

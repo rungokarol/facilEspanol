@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func LoginHandler(responseWriter http.ResponseWriter, r *http.Request) {
+func HandleRequest(r http.ResponseWriter) {
 	log.Println("Login test")
-	fmt.Fprintln(responseWriter, "Login test")
+	fmt.Fprintln(r, "Login test")
 }

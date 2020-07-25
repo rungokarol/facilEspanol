@@ -25,16 +25,16 @@ func initDb() *gorm.DB {
 		panic("failed to connect database")
 	}
 
-    log.Println("Connected to database!")
+	log.Println("Connected to database!")
 
 	// Migrate the schema
 	db.AutoMigrate(&model.User{})
 
-    return db
+	return db
 }
 
 func main() {
-    db := initDb()
+	db := initDb()
 	defer db.Close()
 
 	http.HandleFunc("/", handler)

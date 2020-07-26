@@ -10,8 +10,13 @@ import (
 )
 
 func main() {
-	env := controler.CreateEnv()
-	defer env.Close() //make it private
+	store, err := controler.OpenDB()
+	if err != nil {
+		panic("Could not connect to database!")
+	}
+	defer store.Close()
+
+	env := controler.CreateEnv(store)
 
 	http.HandleFunc("/", env.DefaultRoot)
 	http.HandleFunc("/user/login", env.Login)

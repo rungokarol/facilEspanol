@@ -8,15 +8,15 @@ import (
 	"github.com/rungokarol/facilEspanol/model"
 )
 
-type Env struct {
+type DbStore struct {
 	db *gorm.DB
 }
 
-func CreateEnv() *Env {
+func OpenDB() (*DbStore, error) {
 	db, err := gorm.Open("postgres", "host=localhost port=5432 user=facilEspanolUser dbname=facilEspanolDb password=facilEspanolPass sslmode=disable")
 	if err != nil {
 		log.Println(err)
-		panic("failed to connect database")
+		return nil, err
 	}
 
 	log.Println("Connected to database!")
@@ -24,9 +24,9 @@ func CreateEnv() *Env {
 	// Migrate the schema
 	db.AutoMigrate(&model.User{})
 
-	return &Env{db}
+	return &DbStore{db: db}, nil
 }
 
-func (env *Env) Close() {
-	env.db.Close()
+func (db *DbStore) Close() {
+	db.Close()
 }

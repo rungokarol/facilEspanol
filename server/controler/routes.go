@@ -19,7 +19,7 @@ func (env *Env) DefaultRoot(responseWriter http.ResponseWriter, r *http.Request)
 }
 
 func (env *Env) Login(responseWriter http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
+	if r.Method != "POST" { // unit test needed
 		http.Error(responseWriter, http.StatusText(405), 405)
 		return
 	}

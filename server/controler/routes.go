@@ -19,20 +19,22 @@ func (env *Env) DefaultRoot(responseWriter http.ResponseWriter, r *http.Request)
 }
 
 func (env *Env) Login(responseWriter http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" { //unit test needed
+	if r.Method != "POST" {
 		http.Error(responseWriter, http.StatusText(405), 405)
 		return
 	}
 
 	var loginReq loginReq
-	json.NewDecoder(r.Body).Decode(&loginReq) //handle errors
+	if err := json.NewDecoder(r.Body).Decode(&loginReq); err != nil {
+		http.Error(responseWriter, http.StatusText(400), 400)
+		return
+	}
 
 	user, err := env.store.GetUserByUsername(strings.ToLower(loginReq.Username))
 	if err != nil {
-		log.Println(err)
-	} else {
-		log.Println(user)
+		http.Error(responseWriter, "User not found", 404)
+		return
 	}
 
-	fmt.Fprintf(responseWriter, "user login")
+	fmt.Fprintln(responseWriter, user)
 }

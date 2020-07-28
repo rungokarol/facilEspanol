@@ -31,17 +31,16 @@ func (db *DbStore) Close() {
 	db.Close()
 }
 
-func (dbStore *DbStore) GetUserByUsername(username string) (model.User, error) {
+func (dbStore *DbStore) GetUserByUsername(username string) (*model.User, error) {
 	var result model.User
 
 	err := dbStore.db.Where("username = ?", username).First(&result).Error
-
-	if err != nil && gorm.IsRecordNotFoundError(err) {
-		return result, err
-	} else if err != nil {
+	if err != nil && !gorm.IsRecordNotFoundError(err) {
 		log.Println("Error fetching from database: ", err)
-		return result, err
+		return nil, err
+	} else if gorm.IsRecordNotFoundError(err) {
+		return nil, nil
 	}
 
-	return result, nil
+	return &result, nil
 }

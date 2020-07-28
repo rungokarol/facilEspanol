@@ -32,6 +32,9 @@ func (env *Env) Login(responseWriter http.ResponseWriter, r *http.Request) {
 
 	user, err := env.store.GetUserByUsername(strings.ToLower(loginReq.Username))
 	if err != nil {
+		http.Error(responseWriter, http.StatusText(500), 500)
+		return
+	} else if user == nil {
 		http.Error(responseWriter, "User not found", 404)
 		return
 	}

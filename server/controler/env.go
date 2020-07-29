@@ -3,7 +3,7 @@ package controler
 import "github.com/rungokarol/facilEspanol/model"
 
 type IDataStore interface {
-	GetUserByUsername(string) (model.User, error)
+	GetUserByUsername(string) (*model.User, error)
 }
 
 type Env struct {

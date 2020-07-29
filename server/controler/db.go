@@ -1,7 +1,6 @@
 package controler
 
 import (
-	"errors"
 	"log"
 
 	"github.com/jinzhu/gorm"
@@ -32,11 +31,16 @@ func (db *DbStore) Close() {
 	db.Close()
 }
 
-func (dbStore *DbStore) GetUserByUsername(username string) (model.User, error) {
+func (dbStore *DbStore) GetUserByUsername(username string) (*model.User, error) {
 	var result model.User
-	if dbStore.db.Where("username = ?", username).First(&result).RecordNotFound() {
-		return result, errors.New("User not found!") //try another way to get error
+
+	err := dbStore.db.Where("username = ?", username).First(&result).Error
+	if err != nil && !gorm.IsRecordNotFoundError(err) {
+		log.Println("Error fetching from database: ", err)
+		return nil, err
+	} else if gorm.IsRecordNotFoundError(err) {
+		return nil, nil
 	}
 
-	return result, nil
+	return &result, nil
 }

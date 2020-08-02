@@ -15,6 +15,10 @@ type loginReq struct {
 	Password string
 }
 
+type loginResponse struct {
+	token string
+}
+
 func (env *Env) DefaultRoot(responseWriter http.ResponseWriter, r *http.Request) {
 	log.Println("request received")
 	fmt.Fprintf(responseWriter, "Hello %s!", r.URL.Path[1:])
@@ -46,11 +50,16 @@ func (env *Env) Login(responseWriter http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 1. Zahaszowac haslo z requsta 	DONE
-	// 2. Porownac z hashem w rekordzie DONE
-	// 3. Stworz i wyslij JWT			TODO
+	token, err := createJwt(user.Username)
+	if err != nil {
+		http.Error(responseWriter, "Error creating JWT", 500)
+		return
+	}
 
+	response := loginResponse{
+		token: token,
+	}
 
-
-	fmt.Fprintln(responseWriter, user)
+	// TODO: check if it's converting to JSON
+	fmt.Fprintln(responseWriter, response);
 }

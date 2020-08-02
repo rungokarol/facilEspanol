@@ -4,6 +4,8 @@ import "github.com/rungokarol/facilEspanol/model"
 
 type IDataStore interface {
 	GetUserByUsername(string) (*model.User, error)
+	IsUserPresent(string) (bool, error)
+	CreateUser(*model.User) error
 }
 
 type Env struct {

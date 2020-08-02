@@ -44,3 +44,16 @@ func (dbStore *DbStore) GetUserByUsername(username string) (*model.User, error) 
 
 	return &result, nil
 }
+
+func (dbStore *DbStore) IsUserPresent(username string) (bool, error) {
+	user, err := dbStore.GetUserByUsername(username)
+	if err != nil {
+		return false, err
+	}
+
+	return user != nil, nil
+}
+
+func (dbStore *DbStore) CreateUser(newUser *model.User) error {
+	return dbStore.db.Create(newUser).Error
+}

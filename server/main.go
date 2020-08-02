@@ -20,6 +20,7 @@ func main() {
 
 	http.HandleFunc("/", env.DefaultRoot)
 	http.HandleFunc("/user/login", env.Login)
+	http.HandleFunc("/user/register", env.Register)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

@@ -17,7 +17,7 @@ type loginReq struct {
 }
 
 type loginResponse struct {
-	token string
+	Token string `json:"token"`
 }
 
 type registerReq struct {
@@ -65,11 +65,17 @@ func (env *Env) Login(responseWriter http.ResponseWriter, r *http.Request) {
 	}
 
 	response := loginResponse{
-		token: token,
+		Token: token,
 	}
 
-	// TODO: check if it's converting to JSON
-	fmt.Fprintln(responseWriter, response)
+	responseJson, err := json.Marshal(response)
+	if err != nil {
+		http.Error(responseWriter, http.StatusText(500), 500)
+		return
+	}
+
+	responseWriter.Header().Set("Content-Type", "application/json")
+	responseWriter.Write(responseJson)
 }
 
 func (env *Env) Register(responseWriter http.ResponseWriter, r *http.Request) {

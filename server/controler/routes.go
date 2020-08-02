@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"strings"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type loginReq struct {
@@ -38,6 +40,17 @@ func (env *Env) Login(responseWriter http.ResponseWriter, r *http.Request) {
 		http.Error(responseWriter, "User not found", 404)
 		return
 	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(loginReq.Password)) ; err != nil {
+		http.Error(responseWriter, "Wrong username or password", 403)
+		return
+	}
+
+	// 1. Zahaszowac haslo z requsta 	DONE
+	// 2. Porownac z hashem w rekordzie DONE
+	// 3. Stworz i wyslij JWT			TODO
+
+
 
 	fmt.Fprintln(responseWriter, user)
 }

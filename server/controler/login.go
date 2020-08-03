@@ -2,8 +2,6 @@ package controler
 
 import (
 	"encoding/json"
-	"fmt"
-	"log"
 	"net/http"
 	"strings"
 
@@ -20,11 +18,6 @@ type loginResponse struct {
 }
 
 var minLength = 3
-
-func (env *Env) DefaultRoot(responseWriter http.ResponseWriter, r *http.Request) {
-	log.Println("request received")
-	fmt.Fprintf(responseWriter, "Hello %s!", r.URL.Path[1:])
-}
 
 func (env *Env) Login(responseWriter http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
@@ -85,4 +78,3 @@ func (env *Env) Login(responseWriter http.ResponseWriter, r *http.Request) {
 	responseWriter.Header().Set("Content-Type", "application/json")
 	responseWriter.Write(responseJson)
 }
-

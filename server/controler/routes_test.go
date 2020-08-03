@@ -53,8 +53,8 @@ func (suite *LoginReqTestSuite) TestRejectWithNotPostMethod() {
 }
 
 func (suite *LoginReqTestSuite) TestRejectWhenBodyIsNotJson() {
-	req, err := http.NewRequest("POST", "/user/login",
-		ioutil.NopCloser(bytes.NewBufferString("Hello World")))
+	notJsonBody := ioutil.NopCloser(bytes.NewBufferString("Hello World"))
+	req, err := http.NewRequest("POST", "/user/login", notJsonBody)
 	assert.Nil(suite.T(), err)
 
 	suite.handler.ServeHTTP(suite.rr, req)

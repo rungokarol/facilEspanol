@@ -87,39 +87,52 @@ func (env *Env) Login(responseWriter http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//status 201 - created; 202- accepted
 	responseWriter.Header().Set("Content-Type", "application/json")
 	responseWriter.Write(responseJson)
 }
 
 func (env *Env) Register(responseWriter http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" { // unit test needed
-		http.Error(responseWriter, http.StatusText(405), 405)
+	if r.Method != "POST" {
+		http.Error(responseWriter,
+			http.StatusText(http.StatusMethodNotAllowed),
+			http.StatusMethodNotAllowed)
 		return
 	}
 
 	var registerReq registerReq
 	if err := json.NewDecoder(r.Body).Decode(&registerReq); err != nil {
-		http.Error(responseWriter, http.StatusText(400), 400)
+		http.Error(responseWriter,
+			http.StatusText(http.StatusBadRequest),
+			http.StatusBadRequest)
 		return
 	}
 
 	if len(registerReq.Username) < minLength || len(registerReq.Password) < minLength {
-		http.Error(responseWriter, "Username or password too short", 400)
+		http.Error(responseWriter,
+			"Username or password too short",
+			http.StatusBadRequest)
 		return
 	}
 
 	isPresent, err := env.store.IsUserPresent(strings.ToLower(registerReq.Username))
 	if err != nil {
-		http.Error(responseWriter, http.StatusText(500), 500)
+		http.Error(responseWriter,
+			http.StatusText(http.StatusInternalServerError), //check if good status maybe unauthorized?
+			http.StatusInternalServerError)
 		return
 	} else if isPresent {
-		http.Error(responseWriter, "User with given username already exists", 400)
+		http.Error(responseWriter,
+			"User with given username already exists",
+			http.StatusBadRequest)
 		return
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(registerReq.Password), bcrypt.DefaultCost)
 	if err != nil {
-		http.Error(responseWriter, http.StatusText(500), 500)
+		http.Error(responseWriter,
+			http.StatusText(http.StatusInternalServerError),
+			http.StatusInternalServerError)
 		return
 	}
 
@@ -129,7 +142,9 @@ func (env *Env) Register(responseWriter http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := env.store.CreateUser(&model); err != nil {
-		http.Error(responseWriter, http.StatusText(500), 500)
+		http.Error(responseWriter,
+			http.StatusText(http.StatusInternalServerError),
+			http.StatusInternalServerError)
 		return
 	}
 }

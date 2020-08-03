@@ -37,7 +37,8 @@ func (env *Env) Register(responseWriter http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isPresent, err := env.store.IsUserPresent(strings.ToLower(registerReq.Username))
+	username := strings.ToLower(registerReq.Username)
+	isPresent, err := env.store.IsUserPresent(username)
 	if err != nil {
 		http.Error(responseWriter,
 			http.StatusText(http.StatusInternalServerError), //check if good status maybe unauthorized?
@@ -59,7 +60,7 @@ func (env *Env) Register(responseWriter http.ResponseWriter, r *http.Request) {
 	}
 
 	model := model.User{
-		Username:     strings.ToLower(registerReq.Username),
+		Username:     username,
 		PasswordHash: string(hashedPassword),
 	}
 

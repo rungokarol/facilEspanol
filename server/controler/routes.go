@@ -33,34 +33,45 @@ func (env *Env) DefaultRoot(responseWriter http.ResponseWriter, r *http.Request)
 }
 
 func (env *Env) Login(responseWriter http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" { // unit test needed
-		http.Error(responseWriter, http.StatusText(405), 405)
+	if r.Method != "POST" {
+		http.Error(responseWriter,
+			http.StatusText(http.StatusMethodNotAllowed),
+			http.StatusMethodNotAllowed)
 		return
 	}
 
 	var loginReq loginReq
 	if err := json.NewDecoder(r.Body).Decode(&loginReq); err != nil {
-		http.Error(responseWriter, http.StatusText(400), 400)
+		http.Error(responseWriter,
+			http.StatusText(http.StatusBadRequest),
+			http.StatusBadRequest)
 		return
 	}
 
 	user, err := env.store.GetUserByUsername(strings.ToLower(loginReq.Username))
 	if err != nil {
-		http.Error(responseWriter, http.StatusText(500), 500)
+		http.Error(responseWriter,
+			http.StatusText(http.StatusInternalServerError),
+			http.StatusInternalServerError)
 		return
 	} else if user == nil {
-		http.Error(responseWriter, "User not found", 404)
+		http.Error(responseWriter, "User not found", http.StatusNotFound) //not sure if correct status
 		return
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(loginReq.Password)); err != nil {
-		http.Error(responseWriter, "Wrong username or password", 403)
+	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash),
+		[]byte(loginReq.Password)); err != nil {
+		http.Error(responseWriter,
+			"Wrong username or password",
+			http.StatusForbidden)
 		return
 	}
 
 	token, err := createJwt(user.Username)
 	if err != nil {
-		http.Error(responseWriter, "Error creating JWT", 500)
+		http.Error(responseWriter,
+			"Error creating JWT",
+			http.StatusInternalServerError)
 		return
 	}
 
@@ -70,7 +81,9 @@ func (env *Env) Login(responseWriter http.ResponseWriter, r *http.Request) {
 
 	responseJson, err := json.Marshal(response)
 	if err != nil {
-		http.Error(responseWriter, http.StatusText(500), 500)
+		http.Error(responseWriter,
+			http.StatusText(http.StatusInternalServerError),
+			http.StatusInternalServerError)
 		return
 	}
 

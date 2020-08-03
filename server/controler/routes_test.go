@@ -49,7 +49,7 @@ func (suite *LoginReqTestSuite) TestRejectWithNotPostMethod() {
 	assert.Nil(suite.T(), err)
 
 	suite.handler.ServeHTTP(suite.rr, req)
-	assert.Equal(suite.T(), 405, suite.rr.Code)
+	assert.Equal(suite.T(), http.StatusMethodNotAllowed, suite.rr.Code)
 }
 
 func (suite *LoginReqTestSuite) TestRejectWhenBodyIsNotJson() {

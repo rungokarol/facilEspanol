@@ -1,11 +1,15 @@
 package controler
 
 import (
+	"bytes"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/rungokarol/facilEspanol/model"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
 type storeMock struct {
@@ -21,22 +25,41 @@ func (sm *storeMock) CreateUser(*model.User) error {
 	return nil
 }
 
-func TestShouldRejectUserLoginReqWithNotPostMethod(t *testing.T) {
-	storeMock := &storeMock{}
-	env := CreateEnv(storeMock)
-
-	req, err := http.NewRequest("GET", "/user/login", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(env.Login)
-
-	handler.ServeHTTP(rr, req)
-
-	if status := rr.Code; status != 405 {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusOK)
-	}
+type LoginReqTestSuite struct {
+	suite.Suite
+	env       *Env
+	storeMock *storeMock
+	rr        *httptest.ResponseRecorder
+	handler   http.Handler
 }
+
+func (suite *LoginReqTestSuite) SetupTest() {
+	suite.storeMock = &storeMock{}
+	suite.env = CreateEnv(suite.storeMock)
+	suite.rr = httptest.NewRecorder()
+	suite.handler = http.HandlerFunc(suite.env.Login)
+}
+
+func TestLoginReq(t *testing.T) {
+	suite.Run(t, new(LoginReqTestSuite))
+}
+
+func (suite *LoginReqTestSuite) TestRejectWithNotPostMethod() {
+	req, err := http.NewRequest("GET", "/user/login", nil)
+	assert.Nil(suite.T(), err)
+
+	suite.handler.ServeHTTP(suite.rr, req)
+	assert.Equal(suite.T(), 405, suite.rr.Code)
+}
+
+func (suite *LoginReqTestSuite) TestRejectWhenBodyIsNotJson() {
+	req, err := http.NewRequest("POST", "/user/login",
+		ioutil.NopCloser(bytes.NewBufferString("Hello World")))
+	assert.Nil(suite.T(), err)
+
+	suite.handler.ServeHTTP(suite.rr, req)
+	assert.Equal(suite.T(), http.StatusBadRequest, suite.rr.Code)
+}
+
+// TODO
+// 1. create "testify" mock

@@ -21,9 +21,10 @@ var minLength = 3
 
 func (env *Env) Login(responseWriter http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
-		http.Error(responseWriter,
-			http.StatusText(http.StatusMethodNotAllowed),
-			http.StatusMethodNotAllowed)
+		// http.Error(responseWriter,
+		// http.StatusText(http.StatusMethodNotAllowed),
+		// http.StatusMethodNotAllowed)
+		responseWriter.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 

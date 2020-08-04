@@ -13,7 +13,7 @@ type loginReq struct {
 	Password string
 }
 
-type loginResponse struct {
+type loginResp struct {
 	Token string `json:"token"`
 }
 
@@ -21,26 +21,19 @@ var minLength = 3
 
 func (env *Env) Login(responseWriter http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
-		// http.Error(responseWriter,
-		// http.StatusText(http.StatusMethodNotAllowed),
-		// http.StatusMethodNotAllowed)
 		responseWriter.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 
 	var loginReq loginReq
 	if err := json.NewDecoder(r.Body).Decode(&loginReq); err != nil {
-		http.Error(responseWriter,
-			http.StatusText(http.StatusBadRequest),
-			http.StatusBadRequest)
+		responseWriter.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	user, err := env.store.GetUserByUsername(strings.ToLower(loginReq.Username))
 	if err != nil {
-		http.Error(responseWriter,
-			http.StatusText(http.StatusInternalServerError),
-			http.StatusInternalServerError)
+		responseWriter.WriteHeader(http.StatusInternalServerError)
 		return
 	} else if user == nil {
 		http.Error(responseWriter, "User not found", http.StatusNotFound) //not sure if correct status
@@ -63,15 +56,9 @@ func (env *Env) Login(responseWriter http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := loginResponse{
-		Token: token,
-	}
-
-	responseJson, err := json.Marshal(response)
+  responseJson, err := json.Marshal(loginResp{Token: token})
 	if err != nil {
-		http.Error(responseWriter,
-			http.StatusText(http.StatusInternalServerError),
-			http.StatusInternalServerError)
+		responseWriter.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

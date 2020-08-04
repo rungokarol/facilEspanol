@@ -65,7 +65,8 @@ func (suite *LoginReqTestSuite) TestRejectWhenBodyIsNotJson() {
 }
 
 func (suite *LoginReqTestSuite) TestRejectIfUserNofFoundInDataStore() {
-	jsonBody, _ := json.Marshal(map[string]string{"username": "foo", "password": "bar"})
+	jsonBody, err := json.Marshal(loginReq{Username: "foo", Password: "bar"})
+	assert.Nil(suite.T(), err)
 	req, err := http.NewRequest("POST", "/user/login", bytes.NewBuffer(jsonBody))
 	assert.Nil(suite.T(), err)
 

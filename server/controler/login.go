@@ -56,7 +56,7 @@ func (env *Env) Login(responseWriter http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-  responseJson, err := json.Marshal(loginResp{Token: token})
+	responseJson, err := json.Marshal(loginResp{Token: token})
 	if err != nil {
 		responseWriter.WriteHeader(http.StatusInternalServerError)
 		return

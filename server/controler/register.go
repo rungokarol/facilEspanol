@@ -16,13 +16,13 @@ type registerReq struct {
 
 func (env *Env) Register(responseWriter http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
-	  responseWriter.WriteHeader(http.StatusMethodNotAllowed)
+		responseWriter.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 
 	var registerReq registerReq
 	if err := json.NewDecoder(r.Body).Decode(&registerReq); err != nil {
-	  responseWriter.WriteHeader(http.StatusBadRequest)
+		responseWriter.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -36,9 +36,9 @@ func (env *Env) Register(responseWriter http.ResponseWriter, r *http.Request) {
 	username := strings.ToLower(registerReq.Username)
 	isPresent, err := env.store.IsUserPresent(username)
 	if err != nil {
-    //check if good status maybe unauthorized?
-	  responseWriter.WriteHeader(http.StatusInternalServerError)
-	  return
+		//check if good status maybe unauthorized?
+		responseWriter.WriteHeader(http.StatusInternalServerError)
+		return
 	} else if isPresent {
 		http.Error(responseWriter,
 			"User with given username already exists",
@@ -48,7 +48,7 @@ func (env *Env) Register(responseWriter http.ResponseWriter, r *http.Request) {
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(registerReq.Password), bcrypt.DefaultCost)
 	if err != nil {
-	  responseWriter.WriteHeader(http.StatusInternalServerError)
+		responseWriter.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
@@ -58,7 +58,7 @@ func (env *Env) Register(responseWriter http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := env.store.CreateUser(&newUser); err != nil {
-	  responseWriter.WriteHeader(http.StatusInternalServerError)
+		responseWriter.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 }

@@ -2,7 +2,9 @@ package controler
 
 import (
 	"bytes"
+	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -16,6 +18,7 @@ type storeMock struct {
 }
 
 func (sm *storeMock) GetUserByUsername(string) (*model.User, error) {
+	log.Println("GET USER BY USERNAME CALLED")
 	return nil, nil
 }
 func (sm *storeMock) IsUserPresent(string) (bool, error) {
@@ -49,7 +52,7 @@ func (suite *LoginReqTestSuite) TestRejectWithNotPostMethod() {
 	assert.Nil(suite.T(), err)
 
 	suite.handler.ServeHTTP(suite.rr, req)
-	assert.Equal(suite.T(), 405, suite.rr.Code)
+	assert.Equal(suite.T(), http.StatusMethodNotAllowed, suite.rr.Code)
 }
 
 func (suite *LoginReqTestSuite) TestRejectWhenBodyIsNotJson() {
@@ -59,6 +62,16 @@ func (suite *LoginReqTestSuite) TestRejectWhenBodyIsNotJson() {
 
 	suite.handler.ServeHTTP(suite.rr, req)
 	assert.Equal(suite.T(), http.StatusBadRequest, suite.rr.Code)
+}
+
+func (suite *LoginReqTestSuite) TestRejectIfUserNofFoundInDataStore() {
+	jsonBody, err := json.Marshal(loginReq{Username: "foo", Password: "bar"})
+	assert.Nil(suite.T(), err)
+	req, err := http.NewRequest("POST", "/user/login", bytes.NewBuffer(jsonBody))
+	assert.Nil(suite.T(), err)
+
+	suite.handler.ServeHTTP(suite.rr, req)
+	assert.Equal(suite.T(), http.StatusNotFound, suite.rr.Code)
 }
 
 // TODO

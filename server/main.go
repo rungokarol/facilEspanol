@@ -18,7 +18,6 @@ func main() {
 
 	env := controler.CreateEnv(store)
 
-	http.HandleFunc("/", env.DefaultRoot)
 	http.HandleFunc("/user/login", env.Login)
 	http.HandleFunc("/user/register", env.Register)
 

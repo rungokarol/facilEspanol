@@ -1,9 +1,11 @@
 package controler
 
 import (
+	"context"
 	"log"
 
 	"github.com/jinzhu/gorm"
+	"github.com/reactivex/rxgo/v2"
 
 	"github.com/rungokarol/facilEspanol/model"
 )
@@ -31,27 +33,27 @@ func (db *DbStore) Close() {
 	db.Close()
 }
 
-func (dbStore *DbStore) GetUserByUsername(username string) (*model.User, error) {
-	var result model.User
+func (dbStore *DbStore) GetUserByUsername(username string) rxgo.Observable {
+	return rxgo.Create([]rxgo.Producer{func(_ context.Context, next chan<- rxgo.Item) {
+		var result model.User
 
-	err := dbStore.db.Where("username = ?", username).First(&result).Error
-	if err != nil && !gorm.IsRecordNotFoundError(err) {
-		log.Println("Error fetching from database: ", err)
-		return nil, err
-	} else if gorm.IsRecordNotFoundError(err) {
-		return nil, nil
-	}
+		err := dbStore.db.Where("username = ?", username).First(&result).Error
+		if err != nil {
+			next <- rxgo.Error(err)
+		}
+		next <- rxgo.Of(&result)
+	}})
 
-	return &result, nil
 }
 
 func (dbStore *DbStore) IsUserPresent(username string) (bool, error) {
-	user, err := dbStore.GetUserByUsername(username)
-	if err != nil {
-		return false, err
-	}
+	return false, nil
+	// user, err := dbStore.GetUserByUsername(username)
+	// if err != nil {
+		// return false, err
+	// }
 
-	return user != nil, nil
+	// return user != nil, nil
 }
 
 func (dbStore *DbStore) CreateUser(newUser *model.User) error {

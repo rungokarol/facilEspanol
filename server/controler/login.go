@@ -1,10 +1,15 @@
 package controler
 
 import (
+	"context"
 	"encoding/json"
+	"errors"
+	"io/ioutil"
 	"net/http"
 	"strings"
 
+	"github.com/reactivex/rxgo/v2"
+	"github.com/rungokarol/facilEspanol/model"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -19,50 +24,86 @@ type loginResp struct {
 
 var minLength = 3
 
+func HttpBodyBytesOb(r *http.Request) rxgo.Observable {
+	return rxgo.Create([]rxgo.Producer{func(_ context.Context, next chan<- rxgo.Item) {
+		bytes, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			next <- rxgo.Error(err)
+			return
+		}
+		next <- rxgo.Of(bytes)
+	}})
+}
+
+func HttpRequestOb(r *http.Request) rxgo.Observable {
+	ch := make(chan rxgo.Item)
+	ch <- rxgo.Of(r.Method)
+	return rxgo.FromChannel(ch)
+}
+
+func ErrorIfHttpMethodIsNot(method string) rxgo.Func {
+	return func(_ context.Context, item interface{}) (interface{}, error) {
+		request := item.(*http.Request)
+		if request.Method != method {
+			// TODO: pass http code
+			return nil, errors.New("asdas")
+		}
+		return request, nil
+	}
+}
+
+func ErrorIfUserNotFound() rxgo.Func {
+	return func(_ context.Context, item interface{}) (interface{}, error) {
+		user := item.(*model.User)
+		if user == nil {
+			return nil, errors.New("User not found")
+		}
+		return user, nil
+	}
+}
+
+func ErrorIfPasswordHashDoesNotMatch(requestPassword string) rxgo.Func {
+	return func(_ context.Context, item interface{}) (interface{}, error) {
+		user := item.(*model.User)
+		if err := bcrypt.CompareHashAndPassword(
+			[]byte(user.PasswordHash), []byte(requestPassword)) ; err != nil {
+			return nil, err
+		}
+		return user, nil
+	}
+}
+
+func CreateJwtToken() rxgo.Func {
+	return func(_ context.Context, item interface{}) (interface{}, error) {
+		user := item.(*model.User)
+		return createJwt(user.Username)
+	}
+}
+
 func (env *Env) Login(responseWriter http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		responseWriter.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
+	obs := HttpRequestOb(r).Map(
+		ErrorIfHttpMethodIsNot(http.MethodPost),
+	).FlatMap(func(item rxgo.Item) rxgo.Observable {
+		request := item.V.(*http.Request)
+		return HttpBodyBytesOb(request)
+	}).Unmarshal(
+		json.Unmarshal,
+		func() interface{} { return &loginReq{} },
+	).FlatMap(func(item rxgo.Item) rxgo.Observable {
+		loginReq := item.V.(loginReq)
+		return env.store.GetUserByUsername(strings.ToLower(loginReq.Username),
+			).Map(ErrorIfUserNotFound(),
+			).Map(ErrorIfPasswordHashDoesNotMatch(loginReq.Password))
+	}).Map(CreateJwtToken(),
+	).Marshal(json.Marshal)
 
-	var loginReq loginReq
-	if err := json.NewDecoder(r.Body).Decode(&loginReq); err != nil {
-		responseWriter.WriteHeader(http.StatusBadRequest)
-		return
-	}
+	obs.DoOnNext(func(item interface{}) {
+		jsonRes := item.([]byte)
+		responseWriter.Header().Set("Content-Type", "application/json")
+		responseWriter.Write(jsonRes)
+	})
+	obs.DoOnError(func(err error) {
+		http.Error(responseWriter, err.Error(), http.StatusBadRequest)
+	})
 
-	user, err := env.store.GetUserByUsername(strings.ToLower(loginReq.Username))
-	if err != nil {
-		responseWriter.WriteHeader(http.StatusInternalServerError)
-		return
-	} else if user == nil {
-		http.Error(responseWriter, "User not found", http.StatusNotFound) //not sure if correct status
-		return
-	}
-
-	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash),
-		[]byte(loginReq.Password)); err != nil {
-		http.Error(responseWriter,
-			"Wrong username or password",
-			http.StatusForbidden)
-		return
-	}
-
-	token, err := createJwt(user.Username)
-	if err != nil {
-		http.Error(responseWriter,
-			"Error creating JWT",
-			http.StatusInternalServerError)
-		return
-	}
-
-	responseJson, err := json.Marshal(loginResp{Token: token})
-	if err != nil {
-		responseWriter.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	//status 201 - created; 202- accepted
-	responseWriter.Header().Set("Content-Type", "application/json")
-	responseWriter.Write(responseJson)
 }

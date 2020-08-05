@@ -1,9 +1,12 @@
 package controler
 
-import "github.com/rungokarol/facilEspanol/model"
+import (
+	"github.com/reactivex/rxgo/v2"
+	"github.com/rungokarol/facilEspanol/model"
+)
 
 type IDataStore interface {
-	GetUserByUsername(string) (*model.User, error)
+	GetUserByUsername(string) rxgo.Observable
 	IsUserPresent(string) (bool, error)
 	CreateUser(*model.User) error
 }

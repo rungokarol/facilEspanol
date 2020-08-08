@@ -33,6 +33,7 @@ github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZN
 github.com/rakyll/gotest v0.0.5 h1:+BrdqPxKPDaxvhtIiVzfiYXLhi4BrSOqdwaEiA7qjpk=
 github.com/rakyll/gotest v0.0.5/go.mod h1:SkoesdNCWmiD4R2dljIUcfSnNdVZ12y8qK4ojDkc2Sc=
 github.com/rungokarol/facilEspanol/server v0.0.0-20200718070110-4da5a88896f2 h1:G7NZYU/0ma6af2xrSqrpBBfiddiPPgQIJuI++v0R4A0=
+github.com/stretchr/objx v0.1.0 h1:4G4v2dO3VZwixGIRoQ5Lfboy6nUhCyYzaqnIAPPhYs4=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.6.1 h1:hDPOHmpOpP40lSULcqw7IrRb/u7w6RpDC9399XyoNd0=
 github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=

@@ -18,7 +18,7 @@ export class LoginFormComponent {
         this.token = data.token;
         console.log(this.token);
       },
-      error: (err) => console.log(err.error),
+      error: (err) => { console.log(err.error); },
     });
   }
 }

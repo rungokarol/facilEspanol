@@ -9,6 +9,7 @@ import {
   MatFormFieldModule,
   MatInputModule,
   MatButtonModule,
+  MatCardModule
 } from '@angular/material/';
 
 @NgModule({
@@ -21,6 +22,7 @@ import {
     MatIconModule,
     MatInputModule,
     MatButtonModule,
+    MatCardModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+
+import { HttpService, LoginResponse } from './services/http.service';
 
 @Injectable()
 @Component({
@@ -10,23 +11,15 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AppComponent {
   hide = true;
-  minLength = 3;
+  token: string = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private httpService: HttpService) {}
 
   loginHandler(username: string, password: string) {
-    if (username.length < this.minLength || password.length < this.minLength) {
-      console.log(`username or password too short`);
-    } else {
-      console.log(`performing login procedure`);
-      this.http
-        .post<any>('http://localhost:8080/user/login', {
-          username,
-          password,
-        })
-        .subscribe((data) => {
-          console.log(data);
-        });
-    }
+    this.httpService
+      .getToken(username, password)
+      .subscribe((data: LoginResponse) => {
+        this.token = data.token;
+      });
   }
 }

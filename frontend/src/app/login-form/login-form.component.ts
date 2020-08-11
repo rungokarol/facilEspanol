@@ -24,4 +24,5 @@ export class LoginFormComponent {
 }
 // TODO
 // 1. unsubscribe -> is it neccessary to keep subscription as a member and unsubscribe in ngOnDestroy?
+// 2. rxjs operators
 

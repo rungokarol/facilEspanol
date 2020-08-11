@@ -31,3 +31,4 @@ export class HttpService {
 
 // TODO
 // 1. post request options -> what to return and return type
+// 2. is decorator correct way to 'provide' service to the module?

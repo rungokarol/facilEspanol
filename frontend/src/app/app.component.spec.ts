@@ -16,12 +16,6 @@ describe('AppComponent', () => {
     }).compileComponents();
   }));
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  });
-
   it('should render login form component', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();

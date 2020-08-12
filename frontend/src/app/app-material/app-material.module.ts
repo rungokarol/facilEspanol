@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   MatIconModule,
   MatFormFieldModule,
@@ -10,13 +11,16 @@ import {
 
 @NgModule({
   declarations: [],
-  imports: [CommonModule],
+  imports: [CommonModule,
+    BrowserAnimationsModule,
+    ],
   exports: [
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
     MatButtonModule,
     MatCardModule,
+    BrowserAnimationsModule,
   ],
 })
 export class AppMaterialModule {}

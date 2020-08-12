@@ -1,9 +1,5 @@
 import { TestBed, getTestBed } from '@angular/core/testing';
 import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from '@angular/platform-browser-dynamic/testing';
-import {
   HttpClientTestingModule,
   HttpTestingController,
 } from '@angular/common/http/testing';
@@ -20,11 +16,6 @@ describe('HttpService', () => {
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(
-      BrowserDynamicTestingModule,
-      platformBrowserDynamicTesting()
-    );
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [HttpService],

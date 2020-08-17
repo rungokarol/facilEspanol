@@ -17,16 +17,16 @@ export class LoginFormComponent {
 
   loginHandler() {
     this.error = null;
-    this.httpService.getToken(this.username, this.password).subscribe({
-      next: (data: LoginResponse) => {
+    this.httpService.getToken(this.username, this.password).subscribe(
+      (data: LoginResponse) => {
         this.token = data.token;
       },
-      error: (err) => {
+      (err) => {
         console.log(err.error);
         this.error = err.error;
         this.token = null;
       },
-    });
+    );
   }
 }
 // TODO

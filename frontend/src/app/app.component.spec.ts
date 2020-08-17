@@ -3,6 +3,7 @@ import {
   async,
   fakeAsync,
   ComponentFixture,
+  tick,
 } from '@angular/core/testing';
 
 import { AppComponent } from './app.component';
@@ -13,7 +14,6 @@ import { Location } from '@angular/common';
 import { LoginFormComponent } from './login-form/login-form.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { AppMaterialModule } from './app-material/app-material.module';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('AppComponent', () => {
@@ -29,7 +29,6 @@ describe('AppComponent', () => {
         HttpClientTestingModule,
       ],
       declarations: [AppComponent, PageNotFoundComponent, LoginFormComponent],
-      schemas: [NO_ERRORS_SCHEMA],
     });
 
     router = TestBed.get(Router);
@@ -53,6 +52,14 @@ describe('AppComponent', () => {
   it('navigates to /login', fakeAsync(() => {
     router.navigate(['login']).then(() => {
       expect(location.path()).toBe('/login');
+    });
+  }));
+
+  it('navigates to /unexpected renders PageNotFoundComponent', fakeAsync(() => {
+    router.navigate(['/unexpected']).then(() => {
+      const compiled = fixture.debugElement.nativeElement;
+      expect(compiled.querySelector('app-page-not-found')).not.toBeNull();
+      tick();
     });
   }));
 });

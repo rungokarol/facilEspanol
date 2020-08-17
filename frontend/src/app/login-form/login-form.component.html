@@ -7,15 +7,20 @@
     <mat-card-content class="login-card-content">
       <mat-form-field appearance="fill">
         <mat-label>Username</mat-label>
-        <input matInput type="text" placeholder="Username" #username />
+        <input
+          matInput
+          type="text"
+          placeholder="Username"
+          [(ngModel)]="username"
+        />
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Password</mat-label>
         <input
           matInput
-          placeholder="Password"
           [type]="hide ? 'password' : 'text'"
-          #password
+          placeholder="Password"
+          [(ngModel)]="password"
         />
         <button
           mat-icon-button
@@ -27,16 +32,12 @@
           <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
         </button>
       </mat-form-field>
+      <mat-error *ngIf="this.error">{{this.error}}</mat-error>
     </mat-card-content>
     <mat-card-actions>
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="loginHandler(username.value, password.value)"
-      >
+      <button mat-raised-button color="primary" (click)="loginHandler()">
         Login
       </button>
     </mat-card-actions>
   </mat-card>
 </div>
-

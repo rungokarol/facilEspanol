@@ -10,6 +10,7 @@ import { LoginFormComponent } from './login-form.component';
 import { AppMaterialModule } from '../app-material/app-material.module';
 import { HttpService, LoginResponse } from '../services/http.service';
 import { of, asyncScheduler, throwError } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 describe('LoginFormComponent', () => {
   let injector: TestBed;
@@ -19,7 +20,7 @@ describe('LoginFormComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [LoginFormComponent],
-      imports: [AppMaterialModule],
+      imports: [AppMaterialModule, FormsModule],
       providers: [
         LoginFormComponent,
         {
@@ -39,20 +40,29 @@ describe('LoginFormComponent', () => {
     };
     httpServiceMock.getToken.and.returnValue(of(loginResp, asyncScheduler));
 
-    component.loginHandler('user', 'pass');
+    component.username = 'user';
+    component.password = 'pass';
+
+    component.loginHandler();
     tick();
 
     expect(httpServiceMock.getToken).toHaveBeenCalledWith('user', 'pass');
     expect(component.token).toEqual('dummy_token');
+    expect(component.error).toBeNull();
   }));
 
-  it('loginHandler does nothing when http service throws error', fakeAsync(() => {
-    httpServiceMock.getToken.and.returnValue(throwError('Test Error'));
+  it('loginHandler stores error thrown by http service', fakeAsync(() => {
+    const err = { error: 'Test error' };
+    httpServiceMock.getToken.and.returnValue(throwError(err));
 
-    component.loginHandler('user', 'pass');
+    component.username = 'user';
+    component.password = 'pass';
+
+    component.loginHandler();
     tick();
 
     expect(httpServiceMock.getToken).toHaveBeenCalledWith('user', 'pass');
     expect(component.token).toBeNull();
+    expect(component.error).toEqual('Test error');
   }));
 });

@@ -19,7 +19,7 @@ export class HttpService {
 
   getToken(username: string, password: string): Observable<LoginResponse> {
     if (username.length < minLength || password.length < minLength) {
-      return throwError(`HTTP_SERVICE: username or password too short`);
+      return throwError({error: `Username or password too short`});
     } else {
       return this.http.post<LoginResponse>(url + loginEndpoint, {
         username,

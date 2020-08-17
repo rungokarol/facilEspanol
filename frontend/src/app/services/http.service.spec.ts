@@ -42,22 +42,4 @@ describe('HttpService', () => {
     expect(req.request.method).toBe('POST');
     req.flush(loginResponseMock);
   });
-
-  it('throws error when username is shorter than 3 chars', () => {
-    service.getToken('X', password).subscribe({
-      error: (err) => {
-        expect(err).toBeTruthy();
-      },
-    });
-    httpMock.expectNone(loginEndpoint);
-  });
-
-  it('throws error when password is shorter than 3 chars', () => {
-    service.getToken(username, 'X').subscribe({
-      error: (err) => {
-        expect(err).toBeTruthy();
-      },
-    });
-    httpMock.expectNone(loginEndpoint);
-  });
 });

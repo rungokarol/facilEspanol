@@ -16,12 +16,13 @@ export class LoginFormComponent {
   constructor(private httpService: HttpService) {}
 
   loginHandler() {
+    this.error = null;
     this.httpService.getToken(this.username, this.password).subscribe({
       next: (data: LoginResponse) => {
-        this.error = null;
         this.token = data.token;
       },
       error: (err) => {
+        console.log(err.error);
         this.error = err.error;
         this.token = null;
       },

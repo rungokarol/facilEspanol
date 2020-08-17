@@ -1,4 +1,4 @@
-<div class="login-container">
+<form #loginForm="ngForm" class="login-container" (ngSubmit)="loginHandler()">
   <mat-card class="login-card">
     <mat-card-header class="login-header">
       <div mat-card-avatar class="login-card-icon"></div>
@@ -10,17 +10,26 @@
         <input
           matInput
           type="text"
-          placeholder="Username"
           [(ngModel)]="username"
+          name="username"
+          #usernameRef="ngModel"
+          required
+          minlength="3"
         />
+        <mat-error *ngIf="usernameRef.invalid && usernameRef.dirty">
+          Min. 3 characters
+        </mat-error>
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Password</mat-label>
         <input
           matInput
           [type]="hide ? 'password' : 'text'"
-          placeholder="Password"
           [(ngModel)]="password"
+          name="password"
+          #passwordRef="ngModel"
+          required
+          minlength="3"
         />
         <button
           mat-icon-button
@@ -31,13 +40,21 @@
         >
           <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
         </button>
+        <mat-error *ngIf="passwordRef.invalid && passwordRef.dirty">
+          Min. 3 characters
+        </mat-error>
       </mat-form-field>
-      <mat-error *ngIf="this.error">{{this.error}}</mat-error>
+      <mat-error *ngIf="this.error">{{ this.error }}</mat-error>
     </mat-card-content>
     <mat-card-actions>
-      <button mat-raised-button color="primary" (click)="loginHandler()">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="!loginForm.form.valid"
+      >
         Login
       </button>
     </mat-card-actions>
   </mat-card>
-</div>
+</form>

@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 
 const url = 'http://localhost:8080';
 const loginEndpoint = '/user/login';
-const minLength = 3;
 
 export interface LoginResponse {
   token: string;
@@ -14,18 +13,13 @@ export interface LoginResponse {
   providedIn: 'root',
 })
 export class HttpService {
-
   constructor(private http: HttpClient) {}
 
   getToken(username: string, password: string): Observable<LoginResponse> {
-    if (username.length < minLength || password.length < minLength) {
-      return throwError({error: `Username or password too short`});
-    } else {
-      return this.http.post<LoginResponse>(url + loginEndpoint, {
-        username,
-        password,
-      });
-    }
+    return this.http.post<LoginResponse>(url + loginEndpoint, {
+      username,
+      password,
+    });
   }
 }
 

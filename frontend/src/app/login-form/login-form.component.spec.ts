@@ -48,7 +48,7 @@ describe('LoginFormComponent', () => {
 
     expect(httpServiceMock.getToken).toHaveBeenCalledWith('user', 'pass');
     expect(component.token).toEqual('dummy_token');
-    expect(component.error).toBeNull();
+    expect(component.error).toBeUndefined();
   }));
 
   it('loginHandler stores error thrown by http service', fakeAsync(() => {
@@ -63,6 +63,6 @@ describe('LoginFormComponent', () => {
 
     expect(httpServiceMock.getToken).toHaveBeenCalledWith('user', 'pass');
     expect(component.token).toBeNull();
-    expect(component.error).toEqual('Test error');
+    expect(component.error.message).toEqual('Test error');
   }));
 });

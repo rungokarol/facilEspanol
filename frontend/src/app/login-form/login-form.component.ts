@@ -1,10 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpService, LoginResponse } from './../services/http.service';
 
-class ErrorMessage {
-  constructor(public message: string) {}
-}
-
 @Component({
   selector: 'app-login-form',
   templateUrl: './login-form.component.html',
@@ -12,8 +8,8 @@ class ErrorMessage {
 })
 export class LoginFormComponent {
   hide = true;
-  token: string = null;
-  error: ErrorMessage;
+  token?: string;
+  error?: string;
   username = '';
   password = '';
 
@@ -27,9 +23,9 @@ export class LoginFormComponent {
       },
       (err) => {
         console.log(err.error);
-        this.error = new ErrorMessage(err.error);
-        this.token = null;
-      },
+        this.error = err.error;
+        this.token = undefined;
+      }
     );
   }
 }

@@ -62,7 +62,7 @@ describe('LoginFormComponent', () => {
     tick();
 
     expect(httpServiceMock.getToken).toHaveBeenCalledWith('user', 'pass');
-    expect(component.token).toBeNull();
-    expect(component.error.message).toEqual('Test error');
+    expect(component.token).toBeUndefined();
+    expect(component.error).toEqual('Test error');
   }));
 });

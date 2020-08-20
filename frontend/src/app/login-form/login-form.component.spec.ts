@@ -52,7 +52,7 @@ describe('LoginFormComponent', () => {
   }));
 
   it('loginHandler stores error thrown by http service', fakeAsync(() => {
-    const err = { error: 'Test error' };
+    const err = 'Test error';
     httpServiceMock.getToken.and.returnValue(throwError(err));
 
     component.username = 'user';

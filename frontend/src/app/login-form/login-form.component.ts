@@ -21,9 +21,8 @@ export class LoginFormComponent {
       (data: LoginResponse) => {
         this.token = data.token;
       },
-      (err) => {
-        console.log(err.error);
-        this.error = err.error;
+      (err: string) => {
+        this.error = err;
         this.token = undefined;
       }
     );
@@ -32,3 +31,4 @@ export class LoginFormComponent {
 // TODO
 // 1. unsubscribe -> is it neccessary to keep subscription as a member and unsubscribe in ngOnDestroy?
 // 2. rxjs operators
+// 3. receive error as string not as error in component - is it correct??

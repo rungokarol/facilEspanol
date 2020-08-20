@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 const url = 'http://localhost:8080';
 const loginEndpoint = '/user/login';
@@ -16,10 +17,21 @@ export class HttpService {
   constructor(private http: HttpClient) {}
 
   getToken(username: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(url + loginEndpoint, {
-      username,
-      password,
-    });
+    return this.http
+      .post<LoginResponse>(url + loginEndpoint, {
+        username,
+        password,
+      })
+      .pipe(catchError(this.handleError));
+  }
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    console.log(error);
+    if (typeof error.error === 'string') {
+      return throwError(error.error);
+    } else {
+      return throwError('Something bad happened; please try again later.');
+    }
   }
 }
 

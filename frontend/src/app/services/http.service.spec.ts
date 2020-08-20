@@ -42,4 +42,37 @@ describe('HttpService', () => {
     expect(req.request.method).toBe('POST');
     req.flush(loginResponseMock);
   });
+
+  it('should return error when not ok response received', () => {
+    const errorBody = 'User not found';
+
+    service.getToken(username, password).subscribe(
+      () => fail('should have failed'),
+      (error: string) => {
+        expect(error).toEqual(errorBody);
+      }
+    );
+
+    const req = httpMock.expectOne(loginEndpoint);
+    expect(req.request.method).toBe('POST');
+    req.flush(errorBody, { status: 404, statusText: 'error happened' });
+  });
+
+  it('should return error when unknown error received', () => {
+    const progressEvent = new ProgressEvent(`error`);
+    const errorBody = { error: progressEvent };
+
+    service.getToken(username, password).subscribe(
+      () => fail('should have failed'),
+      (error: string) => {
+        expect(error).toEqual(
+          `Something bad happened; please try again later.`
+        );
+      }
+    );
+
+    const req = httpMock.expectOne(loginEndpoint);
+    expect(req.request.method).toBe('POST');
+    req.flush(errorBody, { status: 0, statusText: 'Unknown error' });
+  });
 });

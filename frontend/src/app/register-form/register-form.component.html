@@ -1,21 +1,45 @@
-<mat-card>
-  <form [formGroup]="userData" (ngSubmit)="registerUser()">
-    <mat-form-field appearance="fill">
-      <mat-label>Username</mat-label>
-      <input matInput formControlName="name" />
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Email</mat-label>
-      <input matInput type="email" formControlName="email" />
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Password</mat-label>
-      <input matInput type="password" formControlName="password" />
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Repeat password</mat-label>
-      <input matInput type="password" formControlName="repeatPassword" />
-    </mat-form-field>
-    <button type="submit" [disabled]="!userData.valid">Submit</button>
-  </form>
+<mat-card class="register-card">
+  <mat-card-header class="register-card__header">
+    <div mat-card-avatar class="register-card__header__icon"></div>
+    <mat-card-title>Register</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form
+      class="register-card__form"
+      [formGroup]="userData"
+      (ngSubmit)="registerUser()"
+    >
+      <mat-form-field appearance="fill">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="name" required />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" required />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" required />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Repeat password</mat-label>
+        <input
+          matInput
+          type="password"
+          formControlName="repeatPassword"
+          required
+        />
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+  <mat-card-actions class="register-card__actions">
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="!userData.valid"
+    >
+      Register
+    </button>
+  </mat-card-actions>
 </mat-card>

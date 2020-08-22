@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 import { AppMaterialModule } from './app-material/app-material.module';
 
@@ -12,6 +13,7 @@ import { LoginFormComponent } from './login-form/login-form.component';
   imports: [
     BrowserModule,
     HttpClientModule,
+    FormsModule,
     AppMaterialModule,
   ],
   providers: [],

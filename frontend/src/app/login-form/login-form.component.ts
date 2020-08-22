@@ -4,25 +4,31 @@ import { HttpService, LoginResponse } from './../services/http.service';
 @Component({
   selector: 'app-login-form',
   templateUrl: './login-form.component.html',
-  styleUrls: ['./login-form.component.scss']
+  styleUrls: ['./login-form.component.scss'],
 })
 export class LoginFormComponent {
   hide = true;
-  token: string = null;
+  token?: string;
+  error?: string;
+  username = '';
+  password = '';
 
   constructor(private httpService: HttpService) {}
 
-  loginHandler(username: string, password: string) {
-    this.httpService.getToken(username, password).subscribe({
-      next: (data: LoginResponse) => {
+  loginHandler() {
+    this.error = undefined;
+    this.httpService.getToken(this.username, this.password).subscribe(
+      (data: LoginResponse) => {
         this.token = data.token;
-        console.log(this.token);
       },
-      error: (err) => { console.log(err.error); },
-    });
+      (err: string) => {
+        this.error = err;
+        this.token = undefined;
+      }
+    );
   }
 }
 // TODO
 // 1. unsubscribe -> is it neccessary to keep subscription as a member and unsubscribe in ngOnDestroy?
 // 2. rxjs operators
-
+// 3. receive error as string not as error in component - is it correct??

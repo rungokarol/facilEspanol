@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormBuilder } from '@angular/forms';
 
 import { RegisterFormComponent } from './register-form.component';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('RegisterFormComponent', () => {
   let component: RegisterFormComponent;
@@ -8,9 +10,15 @@ describe('RegisterFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RegisterFormComponent ]
-    })
-    .compileComponents();
+      declarations: [RegisterFormComponent],
+      providers: [
+        {
+          provide: FormBuilder,
+          useValue: jasmine.createSpyObj('FormBuilder', ['group']),
+        },
+      ],
+      schemas: [NO_ERRORS_SCHEMA],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -21,5 +29,9 @@ describe('RegisterFormComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('reguster user does nothing', () => {
+    component.registerUser();
   });
 });

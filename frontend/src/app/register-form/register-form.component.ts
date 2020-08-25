@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { HttpService } from '../services/http.service';
 
 @Component({
   selector: 'app-register-form',
@@ -7,19 +8,26 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
   styleUrls: ['./register-form.component.scss'],
 })
 export class RegisterFormComponent implements OnInit {
-  registerForm: FormGroup;
+  registerForm = this.fb.group({
+    name: ['ala', [Validators.required, Validators.minLength(3)]],
+    email: ['ala@a', [Validators.required, Validators.email]],
+    password: ['dupa', [Validators.required, Validators.minLength(3)]],
+    repeatPassword: ['dupa', Validators.required],
+  });
 
-  constructor(private fb: FormBuilder) {
-    this.registerForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(3)]],
-      repeatPassword: ['', Validators.required],
-    });
-  }
+  constructor(private fb: FormBuilder, private httpServie: HttpService) {}
 
   registerUser() {
     console.log(`register`);
+    this.httpServie
+      .registerUser({
+        username: this.registerForm.controls.name.value,
+        password: this.registerForm.controls.password.value,
+      })
+      .subscribe({
+        next: (data) => console.log(data),
+        error: (err) => console.log(err),
+      });
   }
 
   ngOnInit() {}

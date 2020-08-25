@@ -10,43 +10,25 @@ import (
 	"testing"
 
 	"github.com/rungokarol/facilEspanol/model"
+	"github.com/rungokarol/facilEspanol/mocks"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 	"golang.org/x/crypto/bcrypt"
 )
 
 var username string = "foo"
 
-type storeMock struct {
-	mock.Mock
-}
-
-func (sm *storeMock) GetUserByUsername(username string) (*model.User, error) {
-	args := sm.Called(username)
-
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).(*model.User), args.Error(1)
-}
-func (sm *storeMock) IsUserPresent(string) (bool, error) {
-	return false, nil
-}
-func (sm *storeMock) CreateUser(*model.User) error {
-	return nil
-}
 
 type LoginReqTestSuite struct {
 	suite.Suite
 	env       *Env
-	storeMock *storeMock
+	storeMock *mocks.IDataStore
 	rr        *httptest.ResponseRecorder
 	handler   http.Handler
 }
 
 func (suite *LoginReqTestSuite) SetupTest() {
-	suite.storeMock = &storeMock{}
+	suite.storeMock = &mocks.IDataStore{}
 	suite.env = CreateEnv(suite.storeMock)
 	suite.rr = httptest.NewRecorder()
 	suite.handler = http.HandlerFunc(suite.env.Login)

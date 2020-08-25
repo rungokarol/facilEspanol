@@ -7,9 +7,10 @@ import { AppMaterialModule } from './app-material/app-material.module';
 
 import { AppComponent } from './app.component';
 import { LoginFormComponent } from './login-form/login-form.component';
+import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginFormComponent],
+  declarations: [AppComponent, LoginFormComponent, NavigationBarComponent],
   imports: [
     BrowserModule,
     HttpClientModule,

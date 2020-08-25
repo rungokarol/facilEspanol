@@ -17,3 +17,5 @@
 # Directories with binaries
 bin/
 
+
+server/coverage.out

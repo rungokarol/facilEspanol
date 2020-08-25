@@ -22,11 +22,11 @@ The idea of the application is based on Duolingo.  Our goal is not to copy but t
 - user can test latest gained knowledge
 
 ## Technical details
-Programming language: Golang
-Communication with frontend: TBD
-Data storage: TBD
-Unit testing framework: TBD
-E2E testing: TBD
+Programming language: Golang + Typescript
+Communication with frontend: REST API
+Data storage: Postgres
+Unit testing framework: Testify/Jasmine
+E2E testing: Protractor
 
 ##Features
 - user registration & logging

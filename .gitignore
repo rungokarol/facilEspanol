@@ -18,4 +18,8 @@
 bin/
 
 
+# Output from go coverage
 server/coverage.out
+
+# Mockery generated mocks
+server/mocks

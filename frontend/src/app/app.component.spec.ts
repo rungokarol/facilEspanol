@@ -1,25 +1,65 @@
-import { TestBed, async } from '@angular/core/testing';
+import {
+  TestBed,
+  async,
+  fakeAsync,
+  ComponentFixture,
+  tick,
+} from '@angular/core/testing';
 
 import { AppComponent } from './app.component';
-import { Component } from '@angular/core';
-
-@Component({
-  selector: 'app-login-form',
-  template: '',
-})
-class StubLoginFormComponent {}
+import { RouterTestingModule } from '@angular/router/testing';
+import { routes } from './app-routing/app-routing.module';
+import { Router } from '@angular/router';
+import { Location } from '@angular/common';
+import { LoginFormComponent } from './login-form/login-form.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { AppMaterialModule } from './app-material/app-material.module';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('AppComponent', () => {
+  let router: Router;
+  let location: Location;
+  let fixture: ComponentFixture<AppComponent>;
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [AppComponent, StubLoginFormComponent],
-    }).compileComponents();
+      imports: [
+        RouterTestingModule.withRoutes(routes),
+        AppMaterialModule,
+        HttpClientTestingModule,
+      ],
+      declarations: [AppComponent, PageNotFoundComponent, LoginFormComponent],
+    });
+
+    router = TestBed.get(Router);
+    location = TestBed.get(Location);
+
+    fixture = TestBed.createComponent(AppComponent);
+    router.initialNavigation();
   }));
 
-  it('should render login form component', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
+  it('renders router outlet', () => {
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('app-login-form')).toBeDefined();
+    expect(compiled.querySelector('router-outlet')).not.toBeNull();
   });
+
+  it('navigates to "" redirects to /login', fakeAsync(() => {
+    router.navigate(['']).then(() => {
+      expect(location.path()).toBe('/login');
+    });
+  }));
+
+  it('navigates to /login', fakeAsync(() => {
+    router.navigate(['login']).then(() => {
+      expect(location.path()).toBe('/login');
+    });
+  }));
+
+  it('navigates to /unexpected renders PageNotFoundComponent', fakeAsync(() => {
+    router.navigate(['/unexpected']).then(() => {
+      const compiled = fixture.debugElement.nativeElement;
+      expect(compiled.querySelector('app-page-not-found')).not.toBeNull();
+      tick();
+    });
+  }));
 });

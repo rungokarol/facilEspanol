@@ -127,7 +127,4 @@ func (suite *LoginReqTestSuite) TestAcceptIfUserExistsInStoreAndPassowrdMatches(
 }
 
 //TODO:
-// 1. fail generating jwt token - imposible in production code?
-// 2. fail json marshaling
-// 3. remove assert nil? - proposal
-// 4. investigate generating mocks= mockery or other tool
+// 1. investigate generating mocks= mockery or other tool

@@ -40,15 +40,11 @@ describe('RegisterFormComponent', () => {
     httpServiceMock = injector.get(HttpService) as jasmine.SpyObj<HttpService>;
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
   it('registerUser calls http service', fakeAsync(() => {
     httpServiceMock.registerUser.and.returnValue(of(undefined));
 
-    component.registerForm.controls.name.setValue('user');
-    component.registerForm.controls.password.setValue('pass');
+    component.controls.name.setValue('user');
+    component.controls.password.setValue('pass');
 
     component.registerUser();
 
@@ -62,8 +58,8 @@ describe('RegisterFormComponent', () => {
   it('registerUser handles http service error', fakeAsync(() => {
     httpServiceMock.registerUser.and.returnValue(throwError(`test errror`));
 
-    component.registerForm.controls.name.setValue('user');
-    component.registerForm.controls.password.setValue('pass');
+    component.controls.name.setValue('user');
+    component.controls.password.setValue('pass');
 
     component.registerUser();
 
@@ -73,5 +69,43 @@ describe('RegisterFormComponent', () => {
       password: 'pass',
     });
   }));
-});
 
+  it('name must be at least 3 characters long', () => {
+    const nameControl = component.controls.name;
+
+    nameControl.setValue('xx');
+    expect(nameControl.valid).toBeFalsy();
+    nameControl.setValue('xxx');
+    expect(nameControl.valid).toBeTruthy();
+  });
+
+  it('email must have proper format', () => {
+    const emailControl = component.controls.email;
+
+    emailControl.setValue('x@');
+    expect(emailControl.valid).toBeFalsy();
+    emailControl.setValue('x@x.com');
+    expect(emailControl.valid).toBeTruthy();
+  });
+
+  it('password must be at least 3 characters long', () => {
+    const passwordControl = component.controls.password;
+
+    passwordControl.setValue('xx');
+    expect(passwordControl.valid).toBeFalsy();
+    passwordControl.setValue('xxx');
+    expect(passwordControl.valid).toBeTruthy();
+  });
+
+  it('password must equal repeat passowrd', () => {
+    const passwordControl = component.controls.password;
+    const repeatPasswordControl = component.controls.repeatPassword;
+
+    passwordControl.setValue('pass');
+    repeatPasswordControl.setValue('notequal');
+    expect(repeatPasswordControl.valid).toBeFalsy();
+
+    repeatPasswordControl.setValue('pass');
+    expect(repeatPasswordControl.valid).toBeTruthy();
+  });
+});

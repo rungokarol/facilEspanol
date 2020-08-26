@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { HttpService } from '../services/http.service';
 
@@ -7,13 +7,13 @@ import { HttpService } from '../services/http.service';
   templateUrl: './register-form.component.html',
   styleUrls: ['./register-form.component.scss'],
 })
-export class RegisterFormComponent implements OnInit {
+export class RegisterFormComponent {
   registerForm = this.fb.group(
     {
-      name: ['ala', [Validators.required, Validators.minLength(3)]],
-      email: ['ala@a', [Validators.required, Validators.email]],
-      password: ['dupa', [Validators.required, Validators.minLength(3)]],
-      repeatPassword: ['dupaaa', Validators.required],
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(3)]],
+      repeatPassword: ['', Validators.required],
     },
     {
       validator: equal('password', 'repeatPassword'),
@@ -23,7 +23,6 @@ export class RegisterFormComponent implements OnInit {
   constructor(private fb: FormBuilder, private httpServie: HttpService) {}
 
   registerUser() {
-    console.log(`register`);
     this.httpServie
       .registerUser({
         username: this.registerForm.controls.name.value,
@@ -35,11 +34,8 @@ export class RegisterFormComponent implements OnInit {
       });
   }
 
-  ngOnInit() {}
-
-  hasError(controlName: string): boolean {
-    const control = this.registerForm.controls[controlName];
-    return control.invalid && control.dirty;
+  get controls() {
+    return this.registerForm.controls;
   }
 }
 
@@ -62,5 +58,3 @@ function equal(controlName: string, matchingControlName: string) {
   };
 }
 
-// TODO
-// 1. UT fot hasError & equal

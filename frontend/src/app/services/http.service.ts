@@ -4,17 +4,21 @@ import { Observable, throwError } from 'rxjs';
 
 const url = 'http://localhost:8080';
 const loginEndpoint = '/user/login';
+const registerEndpoint = '/user/register';
 const minLength = 3;
 
 export interface LoginResponse {
   token: string;
 }
 
+export class RegisterRequest {
+  constructor(public username: string, public password: string) {}
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class HttpService {
-
   constructor(private http: HttpClient) {}
 
   getToken(username: string, password: string): Observable<LoginResponse> {
@@ -26,6 +30,11 @@ export class HttpService {
         password,
       });
     }
+  }
+
+  registerUser(data: RegisterRequest): Observable<any> {
+    console.log(`HTTP SERVICE REGISTER: ${data.username} ${data.password}`);
+    return this.http.post<any>(url + registerEndpoint, data);
   }
 }
 

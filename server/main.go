@@ -4,6 +4,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/rs/cors"
+
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 
 	"github.com/rungokarol/facilEspanol/controler"
@@ -18,8 +20,16 @@ func main() {
 
 	env := controler.CreateEnv(store)
 
-	http.HandleFunc("/user/login", env.Login)
-	http.HandleFunc("/user/register", env.Register)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/user/login", env.Login)
+	mux.HandleFunc("/user/register", env.Register)
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	cors := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:4200"},
+		AllowCredentials: true,
+		// Enable Debugging for testing, consider disabling in production
+		Debug: true,
+	})
+
+	log.Fatal(http.ListenAndServe(":8080", cors.Handler(mux)))
 }

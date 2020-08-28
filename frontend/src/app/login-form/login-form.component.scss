@@ -1,0 +1,43 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  padding: 2em;
+}
+
+.login-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 300px;
+  max-width: 400px;
+}
+
+.login-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-card-icon {
+  background-image: url('https://d29fhpw069ctt2.cloudfront.net/icon/image/37722/preview.svg');
+  background-size: cover;
+}
+
+.login-card-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+mat-card-actions {
+  align-self: flex-end;
+}
+
+mat-error {
+  font-size: 10px;
+}
+
+mat-form-field {
+  margin-top: 30px;
+}

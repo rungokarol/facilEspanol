@@ -9,15 +9,14 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/rungokarol/facilEspanol/model"
 	"github.com/rungokarol/facilEspanol/mocks"
+	"github.com/rungokarol/facilEspanol/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 	"golang.org/x/crypto/bcrypt"
 )
 
 var username string = "foo"
-
 
 type LoginReqTestSuite struct {
 	suite.Suite
@@ -55,7 +54,7 @@ func (suite *LoginReqTestSuite) TestRejectWhenBodyIsNotJson() {
 	assert.Equal(suite.T(), http.StatusBadRequest, suite.rr.Code)
 }
 
-func (suite *LoginReqTestSuite) TestRejectIfUserNofFoundInDataStore() {
+func (suite *LoginReqTestSuite) TestRejectIfUserNotFoundInDataStore() {
 	jsonBody, err := json.Marshal(loginReq{Username: username, Password: "bar"})
 	assert.Nil(suite.T(), err)
 	req, err := http.NewRequest("POST", "/user/login", bytes.NewBuffer(jsonBody))
@@ -67,7 +66,7 @@ func (suite *LoginReqTestSuite) TestRejectIfUserNofFoundInDataStore() {
 	assert.Equal(suite.T(), http.StatusNotFound, suite.rr.Code)
 }
 
-func (suite *LoginReqTestSuite) TestRejectIfErrorOccursDuringExractingUserFromStore() {
+func (suite *LoginReqTestSuite) TestRejectIfErrorOccursDuringExtractingUserFromStore() {
 	jsonBody, err := json.Marshal(loginReq{Username: username, Password: "bar"})
 	assert.Nil(suite.T(), err)
 	req, err := http.NewRequest("POST", "/user/login", bytes.NewBuffer(jsonBody))
@@ -107,6 +106,3 @@ func (suite *LoginReqTestSuite) TestAcceptIfUserExistsInStoreAndPassowrdMatches(
 	suite.handler.ServeHTTP(suite.rr, req)
 	assert.Equal(suite.T(), http.StatusOK, suite.rr.Code)
 }
-
-//TODO:
-// 1. investigate generating mocks= mockery or other tool

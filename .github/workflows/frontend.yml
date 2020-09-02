@@ -20,11 +20,17 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Angular Github Actions
-        uses: mayurrawte/github-angular-actions@latest
+      - name: Angular Full CI
+        uses: colbyhill21/angular-full-ci/@v1.0
+        with:
+          testcommand: cd frontend && ng test
+          mocha: true
 
-      - name: Angular unit tests
-        run: cd frontend && ng test
+      # - name: Angular Github Actions
+        # uses: mayurrawte/github-angular-actions@latest
+
+      # - name: Angular unit tests
+        # run: cd frontend && ng test
 
       - name: Run a one-line script
         run: echo Hello, world!

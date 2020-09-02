@@ -93,7 +93,7 @@ func (suite *RegisterTestSuite) TestAcceptRegistration() {
 
 	suite.storeMock.
 		On("IsUserPresent", username).Return(false, nil).
-		On("CreateUser", mock.Anything).Return(nil);
+		On("CreateUser", mock.Anything).Return(nil)
 
 	suite.handler.ServeHTTP(suite.rr, req)
 	assert.Equal(suite.T(), http.StatusOK, suite.rr.Code)

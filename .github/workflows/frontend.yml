@@ -28,7 +28,7 @@ jobs:
         working-directory: ./frontend
 
       - name: Angular unit tests
-        run: CHROME_BIN=$(which chromium); ng test --watch=false --browsers=ChromeHeadless
+        run: CHROME_BIN=$(which chromium) && ng test --watch=false --browsers=ChromeHeadless
         working-directory: ./frontend
 
       - name: AOT build

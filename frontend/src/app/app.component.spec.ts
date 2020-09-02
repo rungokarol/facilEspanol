@@ -11,12 +11,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { routes } from './app-routing/app-routing.module';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { LoginFormComponent } from './login-form/login-form.component';
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { AppMaterialModule } from './app-material/app-material.module';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { RegisterFormComponent } from './register-form/register-form.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { AppModule } from './app.module';
 
 describe('AppComponent', () => {
   let router: Router;
@@ -25,18 +20,7 @@ describe('AppComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule.withRoutes(routes),
-        AppMaterialModule,
-        HttpClientTestingModule,
-        ReactiveFormsModule,
-      ],
-      declarations: [
-        AppComponent,
-        PageNotFoundComponent,
-        LoginFormComponent,
-        RegisterFormComponent,
-      ],
+      imports: [RouterTestingModule.withRoutes(routes), AppModule],
     });
 
     router = TestBed.get(Router);

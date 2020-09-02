@@ -22,8 +22,16 @@ jobs:
         run: npm install
         working-directory: ./frontend
 
+      - name: Lint frontend
+        run: ng lint
+        working-directory: ./frontend
+
       - run: export CHROME_BIN=$(which chromium)
 
       - name: Angular unit tests
         run: ng test --watch=false --browsers=ChromeHeadless
+        working-directory: ./frontend
+
+      - name: AOT build
+        run: ng build --aot
         working-directory: ./frontend

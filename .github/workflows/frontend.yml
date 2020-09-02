@@ -31,5 +31,9 @@ jobs:
       - name: Angular Github Actions
         uses: mayurrawte/github-angular-actions@latest
 
+      - run: cd frontend
+
+      - run: npm install
+
       - name: Angular unit tests
-        run: cd frontend && npm install && ng test
+        run: ng test

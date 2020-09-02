@@ -3,6 +3,11 @@
 gofiles=$(git diff --cached --name-only --diff-filter=ACM | grep -v vendor | grep '.go$')
 [ -z "$gofiles" ] && exit 0
 
+if ! which goimports; then
+  echo 'goimports not installed, aborting commit'
+  exit -1
+fi
+
 unformatted=$(goimports -l $gofiles)
 [ -z "$unformatted" ] && exit 0
 

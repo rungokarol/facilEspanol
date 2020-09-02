@@ -44,22 +44,37 @@ describe('HttpService', () => {
     req.flush(loginResponseMock);
   });
 
-  it('throws error when username is shorter than 3 chars', () => {
-    service.getToken('X', password).subscribe({
-      error: (err) => {
-        expect(err).toBeTruthy();
-      },
-    });
-    httpMock.expectNone(loginEndpoint);
+  it('should return error when not ok response received', () => {
+    const errorBody = 'User not found';
+
+    service.getToken(username, password).subscribe(
+      () => fail('should have failed'),
+      (error: string) => {
+        expect(error).toEqual(errorBody);
+      }
+    );
+
+    const req = httpMock.expectOne(loginEndpoint);
+    expect(req.request.method).toBe('POST');
+    req.flush(errorBody, { status: 404, statusText: 'error happened' });
   });
 
-  it('throws error when password is shorter than 3 chars', () => {
-    service.getToken(username, 'X').subscribe({
-      error: (err) => {
-        expect(err).toBeTruthy();
-      },
-    });
-    httpMock.expectNone(loginEndpoint);
+  it('should return error when unknown error received', () => {
+    const progressEvent = new ProgressEvent(`error`);
+    const errorBody = { error: progressEvent };
+
+    service.getToken(username, password).subscribe(
+      () => fail('should have failed'),
+      (error: string) => {
+        expect(error).toEqual(
+          `Something bad happened; please try again later.`
+        );
+      }
+    );
+
+    const req = httpMock.expectOne(loginEndpoint);
+    expect(req.request.method).toBe('POST');
+    req.flush(errorBody, { status: 0, statusText: 'Unknown error' });
   });
 
   it('should call register endpoint', () => {

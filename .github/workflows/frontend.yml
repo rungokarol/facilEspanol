@@ -32,4 +32,4 @@ jobs:
         uses: mayurrawte/github-angular-actions@latest
 
       - name: Angular unit tests
-        run: cd frontend && ng test
+        run: cd frontend && npm install && ng test

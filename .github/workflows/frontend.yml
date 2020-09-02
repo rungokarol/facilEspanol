@@ -35,4 +35,4 @@ jobs:
 
       - run: export CHROME_BIN=$(which chromium)
       - name: Angular unit tests
-        run: cd frontend && ng test
+        run: cd frontend && ng test --watch=false --browsers=ChromeHeadless

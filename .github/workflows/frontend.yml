@@ -19,11 +19,12 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      - run: cd frontend
 
       - name: Angular Full CI
         uses: colbyhill21/angular-full-ci/@v1.0
         with:
-          testcommand: cd frontend && ng test
+          testcommand: ng test
           mocha: true
 
       # - name: Angular Github Actions

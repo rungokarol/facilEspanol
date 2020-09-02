@@ -7,11 +7,12 @@ on:
     branches: ["*"]
 
 jobs:
-  build:
+  CI:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
+
       - name: Use Node.js
         uses: actions/setup-node@v1
 
@@ -26,10 +27,8 @@ jobs:
         run: ng lint
         working-directory: ./frontend
 
-      - run: export CHROME_BIN=$(which chromium)
-
       - name: Angular unit tests
-        run: ng test --watch=false --browsers=ChromeHeadless
+        run: CHROME_BIN=$(which chromium); ng test --watch=false --browsers=ChromeHeadless
         working-directory: ./frontend
 
       - name: AOT build

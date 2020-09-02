@@ -1,0 +1,38 @@
+name: Frontend
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: ["*"]
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+
+      - name: Setup Angular & Protractor
+        uses: mayurrawte/github-angular-actions@latest
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./frontend
+
+      - name: Lint frontend
+        run: ng lint
+        working-directory: ./frontend
+
+      - run: export CHROME_BIN=$(which chromium)
+
+      - name: Angular unit tests
+        run: ng test --watch=false --browsers=ChromeHeadless
+        working-directory: ./frontend
+
+      - name: AOT build
+        run: ng build --aot
+        working-directory: ./frontend

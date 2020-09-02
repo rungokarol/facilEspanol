@@ -5,9 +5,15 @@ import { catchError } from 'rxjs/operators';
 
 const url = 'http://localhost:8080';
 const loginEndpoint = '/user/login';
+const registerEndpoint = '/user/register';
+const minLength = 3;
 
 export interface LoginResponse {
   token: string;
+}
+
+export class RegisterRequest {
+  constructor(public username: string, public password: string) {}
 }
 
 @Injectable({
@@ -32,6 +38,11 @@ export class HttpService {
     } else {
       return throwError('Something bad happened; please try again later.');
     }
+  }
+
+  registerUser(data: RegisterRequest): Observable<any> {
+    console.log(`HTTP SERVICE REGISTER: ${data.username} ${data.password}`);
+    return this.http.post<any>(url + registerEndpoint, data);
   }
 }
 

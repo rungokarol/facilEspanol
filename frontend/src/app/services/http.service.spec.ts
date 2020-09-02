@@ -4,11 +4,12 @@ import {
   HttpTestingController,
 } from '@angular/common/http/testing';
 
-import { HttpService, LoginResponse } from './http.service';
+import { HttpService, LoginResponse, RegisterRequest } from './http.service';
 
 const username = 'ala';
 const password = 'makota';
 const loginEndpoint = 'http://localhost:8080/user/login';
+const registerEndpoint = 'http://localhost:8080/user/register';
 
 describe('HttpService', () => {
   let injector: TestBed;
@@ -75,4 +76,19 @@ describe('HttpService', () => {
     expect(req.request.method).toBe('POST');
     req.flush(errorBody, { status: 0, statusText: 'Unknown error' });
   });
+
+  it('should call register endpoint', () => {
+    const responseBody = null;
+    const registerRequest = new RegisterRequest('user', 'pass');
+    service.registerUser(registerRequest).subscribe((data) => {
+      expect(data).toBeNull();
+    });
+
+    const req = httpMock.expectOne(registerEndpoint);
+    expect(req.request.method).toBe('POST');
+    req.flush(responseBody);
+  });
 });
+
+// TODO
+// 1. test register error (not data)

@@ -1,0 +1,27 @@
+.register-card {
+  max-width: 300px;
+  margin: 0 auto;
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    &__icon {
+      background-image: url('./../../assets/plus.svg');
+      background-size: cover;
+    }
+  }
+
+  &form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

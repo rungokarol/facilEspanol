@@ -30,8 +30,15 @@ jobs:
       - run: export CHROME_BIN=$(which chromium)
 
       - name: Angular unit tests
-        run: ng test --watch=false --browsers=ChromeHeadless
+        run: ng test --karma-config=karma-ci.conf.js
         working-directory: ./frontend
+
+      - name: Test Coverage
+        uses: AthleticNet/comment-test-coverage@1.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./frontend/coverage/frontend/coverage-summary.json
+          title: Karma Test Coverage
 
       - name: AOT build
         run: ng build --aot

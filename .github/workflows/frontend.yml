@@ -35,6 +35,7 @@ jobs:
 
       - name: Test Coverage
         uses: AthleticNet/comment-test-coverage@1.1
+        working-directory: ./frontend
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           path: coverage/frontend/coverage-summary.json

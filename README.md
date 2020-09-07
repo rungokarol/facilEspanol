@@ -1,3 +1,5 @@
+![Frontend workflow](https://github.com/rungokarol/facilEspanol/workflows/Frontend/badge.svg)
+
 # Application intended for learning a foreign language a'la Duolingo
 
 ## Motivation:

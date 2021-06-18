@@ -79,7 +79,11 @@ describe('HttpService', () => {
 
   it('should call register endpoint', () => {
     const responseBody = null;
-    const registerRequest = new RegisterRequest('user', 'pass');
+    const registerRequest = new RegisterRequest(
+      'user',
+      'pass',
+      'dummy@email.com'
+    );
     service.registerUser(registerRequest).subscribe((data) => {
       expect(data).toBeNull();
     });

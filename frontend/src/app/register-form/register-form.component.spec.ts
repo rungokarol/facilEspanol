@@ -45,6 +45,7 @@ describe('RegisterFormComponent', () => {
 
     component.controls.name.setValue('user');
     component.controls.password.setValue('pass');
+    component.controls.email.setValue('dummy@email.com');
 
     component.registerUser();
 
@@ -52,6 +53,7 @@ describe('RegisterFormComponent', () => {
     expect(httpServiceMock.registerUser).toHaveBeenCalledWith({
       username: 'user',
       password: 'pass',
+      email: 'dummy@email.com',
     });
   }));
 
@@ -60,6 +62,7 @@ describe('RegisterFormComponent', () => {
 
     component.controls.name.setValue('user');
     component.controls.password.setValue('pass');
+    component.controls.email.setValue('dummy@email.com');
 
     component.registerUser();
 
@@ -67,6 +70,7 @@ describe('RegisterFormComponent', () => {
     expect(httpServiceMock.registerUser).toHaveBeenCalledWith({
       username: 'user',
       password: 'pass',
+      email: 'dummy@email.com',
     });
   }));
 

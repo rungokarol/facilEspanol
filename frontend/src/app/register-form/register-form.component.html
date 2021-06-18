@@ -12,9 +12,7 @@
       <mat-form-field appearance="fill">
         <mat-label>Username</mat-label>
         <input matInput formControlName="name" required />
-        <mat-error *ngIf="controls.name.invalid">
-          Min. 3 characters
-        </mat-error>
+        <mat-error *ngIf="controls.name.invalid"> Min. 3 characters </mat-error>
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Email</mat-label>
@@ -42,16 +40,16 @@
           required
         />
       </mat-form-field>
+      <mat-card-actions class="register-card__actions">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="!registerForm.valid"
+        >
+          Register
+        </button>
+      </mat-card-actions>
     </form>
   </mat-card-content>
-  <mat-card-actions class="register-card__actions">
-    <button
-      mat-raised-button
-      color="primary"
-      type="submit"
-      [disabled]="!registerForm.valid"
-    >
-      Register
-    </button>
-  </mat-card-actions>
 </mat-card>

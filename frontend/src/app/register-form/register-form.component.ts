@@ -27,6 +27,7 @@ export class RegisterFormComponent {
       .registerUser({
         username: this.registerForm.controls.name.value,
         password: this.registerForm.controls.password.value,
+        email: this.registerForm.controls.email.value,
       })
       .subscribe({
         next: (data) => console.log(data),

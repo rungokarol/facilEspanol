@@ -6,6 +6,7 @@ type IDataStore interface {
 	GetUserByUsername(string) (*model.User, error)
 	IsUserPresent(string) (bool, error)
 	CreateUser(*model.User) error
+	EmailAlreadyInUse(string) (bool, error)
 }
 
 type Env struct {

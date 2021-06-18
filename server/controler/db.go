@@ -57,3 +57,7 @@ func (dbStore *DbStore) IsUserPresent(username string) (bool, error) {
 func (dbStore *DbStore) CreateUser(newUser *model.User) error {
 	return dbStore.db.Create(newUser).Error
 }
+
+func (dbStore *DbStore) EmailAlreadyInUse(email string) (bool, error) {
+	return false, nil
+}

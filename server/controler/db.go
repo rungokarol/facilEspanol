@@ -59,5 +59,11 @@ func (dbStore *DbStore) CreateUser(newUser *model.User) error {
 }
 
 func (dbStore *DbStore) EmailAlreadyInUse(email string) (bool, error) {
-	return false, nil
+	var users []model.User
+	result := dbStore.db.Where("email <> ?", email).Find(&users)
+	if result.RowsAffected > 0 {
+		return true, nil
+	} else {
+		return false, nil
+	}
 }

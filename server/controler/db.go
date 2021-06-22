@@ -62,8 +62,8 @@ func (dbStore *DbStore) EmailAlreadyInUse(email string) (bool, error) {
 	var users []model.User
 	result := dbStore.db.Where("email <> ?", email).Find(&users)
 	if result.RowsAffected > 0 {
-		return true, nil
+		return true, result.Error
 	} else {
-		return false, nil
+		return false, result.Error
 	}
 }

@@ -3,6 +3,7 @@ package controler
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -79,8 +80,8 @@ func (suite *RegisterTestSuite) TestRejectIfUserAlreadyExists() {
 	assert.Nil(suite.T(), err)
 
 	suite.storeMock.
-		On("IsUserPresent", username).Return(true, nil).
-		On("EmailAlreadyInUse", mock.Anything).Return(false, nil)
+		On("EmailAlreadyInUse", mock.Anything).Return(false, nil).
+		On("IsUserPresent", username).Return(true, nil)
 
 	suite.handler.ServeHTTP(suite.rr, req)
 	assert.Equal(suite.T(), http.StatusBadRequest, suite.rr.Code)
@@ -94,8 +95,8 @@ func (suite *RegisterTestSuite) TestAcceptRegistration() {
 	assert.Nil(suite.T(), err)
 
 	suite.storeMock.
-		On("IsUserPresent", username).Return(false, nil).
 		On("EmailAlreadyInUse", mock.Anything).Return(false, nil).
+		On("IsUserPresent", username).Return(false, nil).
 		On("CreateUser", mock.Anything).Return(nil)
 
 	suite.handler.ServeHTTP(suite.rr, req)
@@ -116,4 +117,49 @@ func (suite *RegisterTestSuite) TestRejectIfEmailAlreadyExists() {
 
 	suite.handler.ServeHTTP(suite.rr, req)
 	assert.Equal(suite.T(), http.StatusBadRequest, suite.rr.Code)
+}
+
+func (suite *RegisterTestSuite) TestInternalServerErrorWhenEmailALreadyExistsThrowsError() {
+	username := "foo"
+	jsonBody, err := json.Marshal(registerReq{Username: username, Password: "bar", Email: "dummy@email.com"})
+	assert.Nil(suite.T(), err)
+	req, err := http.NewRequest("POST", "/user/register", bytes.NewBuffer(jsonBody))
+	assert.Nil(suite.T(), err)
+
+	suite.storeMock.
+		On("EmailAlreadyInUse", mock.Anything).Return(false, errors.New("error happened"))
+
+	suite.handler.ServeHTTP(suite.rr, req)
+	assert.Equal(suite.T(), http.StatusInternalServerError, suite.rr.Code)
+}
+
+func (suite *RegisterTestSuite) TestInternalServerErrorWhenIsUserPresentThrowsError() {
+	username := "foo"
+	jsonBody, err := json.Marshal(registerReq{Username: username, Password: "bar", Email: "dummy@email.com"})
+	assert.Nil(suite.T(), err)
+	req, err := http.NewRequest("POST", "/user/register", bytes.NewBuffer(jsonBody))
+	assert.Nil(suite.T(), err)
+
+	suite.storeMock.
+		On("EmailAlreadyInUse", mock.Anything).Return(false, nil).
+		On("IsUserPresent", username).Return(false, errors.New("error happened"))
+
+	suite.handler.ServeHTTP(suite.rr, req)
+	assert.Equal(suite.T(), http.StatusInternalServerError, suite.rr.Code)
+}
+
+func (suite *RegisterTestSuite) TestInternalServerErrorWhenCreateUserThrowsError() {
+	username := "foo"
+	jsonBody, err := json.Marshal(registerReq{Username: username, Password: "bar", Email: "dummy@email.com"})
+	assert.Nil(suite.T(), err)
+	req, err := http.NewRequest("POST", "/user/register", bytes.NewBuffer(jsonBody))
+	assert.Nil(suite.T(), err)
+
+	suite.storeMock.
+		On("EmailAlreadyInUse", mock.Anything).Return(false, nil).
+		On("IsUserPresent", username).Return(false, nil).
+		On("CreateUser", mock.Anything).Return(errors.New("error happened"))
+
+	suite.handler.ServeHTTP(suite.rr, req)
+	assert.Equal(suite.T(), http.StatusInternalServerError, suite.rr.Code)
 }

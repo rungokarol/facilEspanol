@@ -35,6 +35,10 @@ func (env *Env) Register(responseWriter http.ResponseWriter, r *http.Request) {
 	}
 
 	emailInUse, err := env.store.EmailAlreadyInUse(registerReq.Email)
+	if err != nil {
+		responseWriter.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	if emailInUse {
 		http.Error(responseWriter,
 			"Email already in use",

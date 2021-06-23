@@ -57,3 +57,13 @@ func (dbStore *DbStore) IsUserPresent(username string) (bool, error) {
 func (dbStore *DbStore) CreateUser(newUser *model.User) error {
 	return dbStore.db.Create(newUser).Error
 }
+
+func (dbStore *DbStore) EmailAlreadyInUse(email string) (bool, error) {
+	var users []model.User
+	result := dbStore.db.Where("email <> ?", email).Find(&users)
+	if result.RowsAffected > 0 {
+		return true, result.Error
+	} else {
+		return false, result.Error
+	}
+}

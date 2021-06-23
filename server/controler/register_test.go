@@ -78,7 +78,9 @@ func (suite *RegisterTestSuite) TestRejectIfUserAlreadyExists() {
 	req, err := http.NewRequest("POST", "/user/register", bytes.NewBuffer(jsonBody))
 	assert.Nil(suite.T(), err)
 
-	suite.storeMock.On("IsUserPresent", username).Return(true, nil)
+	suite.storeMock.
+		On("IsUserPresent", username).Return(true, nil).
+		On("EmailAlreadyInUse", mock.Anything).Return(false, nil)
 
 	suite.handler.ServeHTTP(suite.rr, req)
 	assert.Equal(suite.T(), http.StatusBadRequest, suite.rr.Code)
@@ -93,10 +95,25 @@ func (suite *RegisterTestSuite) TestAcceptRegistration() {
 
 	suite.storeMock.
 		On("IsUserPresent", username).Return(false, nil).
+		On("EmailAlreadyInUse", mock.Anything).Return(false, nil).
 		On("CreateUser", mock.Anything).Return(nil)
 
 	suite.handler.ServeHTTP(suite.rr, req)
 	assert.Equal(suite.T(), http.StatusOK, suite.rr.Code)
 	suite.storeMock.AssertCalled(suite.T(), "CreateUser", mock.MatchedBy(func(user *model.User) bool { return user.Username == username }))
 
+}
+
+func (suite *RegisterTestSuite) TestRejectIfEmailAlreadyExists() {
+	username := "foo"
+	jsonBody, err := json.Marshal(registerReq{Username: username, Password: "bar", Email: "dummy@email.com"})
+	assert.Nil(suite.T(), err)
+	req, err := http.NewRequest("POST", "/user/register", bytes.NewBuffer(jsonBody))
+	assert.Nil(suite.T(), err)
+
+	suite.storeMock.
+		On("EmailAlreadyInUse", mock.Anything).Return(true, nil)
+
+	suite.handler.ServeHTTP(suite.rr, req)
+	assert.Equal(suite.T(), http.StatusBadRequest, suite.rr.Code)
 }

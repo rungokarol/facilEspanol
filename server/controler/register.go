@@ -12,6 +12,7 @@ import (
 type registerReq struct {
 	Username string
 	Password string
+	Email    string
 }
 
 func (env *Env) Register(responseWriter http.ResponseWriter, r *http.Request) {
@@ -29,6 +30,14 @@ func (env *Env) Register(responseWriter http.ResponseWriter, r *http.Request) {
 	if len(registerReq.Username) < minLength || len(registerReq.Password) < minLength {
 		http.Error(responseWriter,
 			"Username or password too short",
+			http.StatusBadRequest)
+		return
+	}
+
+	emailInUse, err := env.store.EmailAlreadyInUse(registerReq.Email)
+	if emailInUse {
+		http.Error(responseWriter,
+			"Email already in use",
 			http.StatusBadRequest)
 		return
 	}
